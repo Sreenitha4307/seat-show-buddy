@@ -48,7 +48,7 @@ function SeatPicker() {
 
   const handleBook = async () => {
     if (!user) {
-      navigate({ to: "/auth", search: { redirect: `/shows/${showId}` } });
+      navigate({ to: "/auth" });
       return;
     }
     if (selected.length === 0) {
