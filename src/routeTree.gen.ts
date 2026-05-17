@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShowsShowIdRouteImport } from './routes/shows.$showId'
 import { Route as MoviesMovieIdRouteImport } from './routes/movies.$movieId'
+import { Route as BookingsBookingIdRouteImport } from './routes/bookings.$bookingId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,51 @@ const MoviesMovieIdRoute = MoviesMovieIdRouteImport.update({
   path: '/movies/$movieId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingsBookingIdRoute = BookingsBookingIdRouteImport.update({
+  id: '/bookings/$bookingId',
+  path: '/bookings/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/movies/$movieId' | '/shows/$showId'
+  fullPaths:
+    | '/'
+    | '/bookings/$bookingId'
+    | '/movies/$movieId'
+    | '/shows/$showId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/movies/$movieId' | '/shows/$showId'
-  id: '__root__' | '/' | '/movies/$movieId' | '/shows/$showId'
+  to: '/' | '/bookings/$bookingId' | '/movies/$movieId' | '/shows/$showId'
+  id:
+    | '__root__'
+    | '/'
+    | '/bookings/$bookingId'
+    | '/movies/$movieId'
+    | '/shows/$showId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BookingsBookingIdRoute: typeof BookingsBookingIdRoute
   MoviesMovieIdRoute: typeof MoviesMovieIdRoute
   ShowsShowIdRoute: typeof ShowsShowIdRoute
 }
@@ -82,14 +101,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoviesMovieIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookings/$bookingId': {
+      id: '/bookings/$bookingId'
+      path: '/bookings/$bookingId'
+      fullPath: '/bookings/$bookingId'
+      preLoaderRoute: typeof BookingsBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BookingsBookingIdRoute: BookingsBookingIdRoute,
   MoviesMovieIdRoute: MoviesMovieIdRoute,
   ShowsShowIdRoute: ShowsShowIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
