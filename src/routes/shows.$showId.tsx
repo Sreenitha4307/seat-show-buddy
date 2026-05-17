@@ -110,7 +110,6 @@ function SeatPicker() {
                 </button>
               );
             })}
-            {c !== undefined && null}
           </div>
         ))}
       </div>
