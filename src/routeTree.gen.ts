@@ -9,11 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MyBookingsRouteImport } from './routes/my-bookings'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShowsShowIdRouteImport } from './routes/shows.$showId'
 import { Route as MoviesMovieIdRouteImport } from './routes/movies.$movieId'
 import { Route as BookingsBookingIdRouteImport } from './routes/bookings.$bookingId'
 
+const MyBookingsRoute = MyBookingsRouteImport.update({
+  id: '/my-bookings',
+  path: '/my-bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +49,16 @@ const BookingsBookingIdRoute = BookingsBookingIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
@@ -50,6 +66,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/bookings/$bookingId': typeof BookingsBookingIdRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
   '/shows/$showId': typeof ShowsShowIdRoute
@@ -58,14 +76,24 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/my-bookings'
     | '/bookings/$bookingId'
     | '/movies/$movieId'
     | '/shows/$showId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bookings/$bookingId' | '/movies/$movieId' | '/shows/$showId'
+  to:
+    | '/'
+    | '/auth'
+    | '/my-bookings'
+    | '/bookings/$bookingId'
+    | '/movies/$movieId'
+    | '/shows/$showId'
   id:
     | '__root__'
     | '/'
+    | '/auth'
+    | '/my-bookings'
     | '/bookings/$bookingId'
     | '/movies/$movieId'
     | '/shows/$showId'
@@ -73,6 +101,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  MyBookingsRoute: typeof MyBookingsRoute
   BookingsBookingIdRoute: typeof BookingsBookingIdRoute
   MoviesMovieIdRoute: typeof MoviesMovieIdRoute
   ShowsShowIdRoute: typeof ShowsShowIdRoute
@@ -80,6 +110,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/my-bookings': {
+      id: '/my-bookings'
+      path: '/my-bookings'
+      fullPath: '/my-bookings'
+      preLoaderRoute: typeof MyBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -113,6 +157,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  MyBookingsRoute: MyBookingsRoute,
   BookingsBookingIdRoute: BookingsBookingIdRoute,
   MoviesMovieIdRoute: MoviesMovieIdRoute,
   ShowsShowIdRoute: ShowsShowIdRoute,
